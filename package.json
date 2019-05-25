@@ -1,0 +1,30 @@
+{
+  "name": "postman-assignment",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^3.0.6",
+    "body-parser": "^1.19.0",
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
+    "dotenv": "^8.0.0",
+    "express": "^4.17.0",
+    "express-promise-router": "^3.0.3",
+    "jsonwebtoken": "^8.5.1",
+    "knex": "^0.16.5",
+    "mocha": "^6.1.4",
+    "morgan": "^1.9.1",
+    "objection": "^1.6.9",
+    "passport": "^0.4.0",
+    "passport-jwt": "^4.0.0",
+    "passport-local": "^1.0.0",
+    "pg": "^7.11.0",
+    "swagger-ui-express": "^4.0.4"
+  }
+}
