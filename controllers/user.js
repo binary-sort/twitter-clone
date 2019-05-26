@@ -1,10 +1,12 @@
-
-
 const Follow = require('./../models/follow');
 
 const FollowUser = async (req, res) => {
   const userId = req.params.userId;
   const authUserId = req.user.id;
+
+  if (!+userId) {
+    throw notFoundError('User not found!');
+  }
 
   let following = await Follow.query()
     .where('follower', authUserId)
@@ -23,6 +25,10 @@ const FollowUser = async (req, res) => {
 const UnfollowUser = async (req, res) => {
   const userId = req.params.userId;
   const authUserId = req.user.id;
+
+  if (!+userId) {
+    throw notFoundError('User not found!');
+  }
 
   let following = await Follow.query()
     .where('follower', authUserId)

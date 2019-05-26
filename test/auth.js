@@ -16,7 +16,7 @@ const user = {
 
 describe('Users', () => {
   before((done) => {
-    User.query().where('username', 'testuser').delete().then(result => {
+    User.query().where('username', 'testuser').orWhere('username', 'testuser2').delete().then(result => {
       done();
     })
   });
