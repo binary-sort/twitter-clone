@@ -7,6 +7,7 @@
     "start": "node app.js",
     "migrate-start": "npm run migrate && npm start",
     "migrate": "node -r ./dotenv-config.js ./node_modules/knex/bin/cli.js migrate:latest --env databaseConfig",
+    "makemigration": "./node_modules/knex/bin/cli.js migrate:make --env databaseConfig",
     "test": "mocha"
   },
   "author": "",
