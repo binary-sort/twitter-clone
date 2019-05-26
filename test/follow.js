@@ -27,7 +27,6 @@ describe('Tweets', () => {
         password: '1234'
       }).returning('*').then(inserted_result => {
         userId = inserted_result.id;
-        console.log('*************\n', userId, '\n', auth_token);
         done();
       })
     })
