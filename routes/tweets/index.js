@@ -38,4 +38,8 @@ router.delete('/unretweet/tweet/:tweetId', passport.authenticate('jwt', {
   session: false
 }), TweetsController.UnRetweetTweet);
 
+router.post('/reply/:tweetId', passport.authenticate('jwt', {
+  session: false
+}), TweetsController.CreateTweet);
+
 module.exports = router;

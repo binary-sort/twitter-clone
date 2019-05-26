@@ -3,9 +3,11 @@ const Likes = require('./../models/likes');
 const Retweet = require('./../models/retweet');
 
 const CreateTweet = async (req, res) => {
+    let parentId = req.params.tweetId;
     let payload = {
         user_id: req.user.id,
-        tweet: req.body.tweet
+        tweet: req.body.tweet,
+        parent_id: parentId || null
     };
     let insertedTweet = await Tweets.query()
         .insert(payload)
@@ -27,6 +29,7 @@ const TimelineTweets = async (req, res) => {
     let tweets = await Tweets.query()
         .whereRaw('user_id in (select followed from user_following where follower = ?)', req.user.id)
         .orWhere('user_id', req.user.id)
+        .where('parent_id', null)
         .orderBy('created_at', 'DESC');
     return okResponse(res, tweets);
 }
@@ -36,7 +39,7 @@ const GetTweet = async (req, res) => {
     if (!+tweetId) {
         throw notFoundError('Tweet not found!');
     }
-    let tweet = await Tweets.query().findById(+tweetId);
+    let tweet = await Tweets.query().findById(+tweetId).eager('[parent, children]');
     if (!tweet) {
         throw notFoundError('Tweet not Found!');
     }
