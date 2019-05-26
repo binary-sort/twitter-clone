@@ -152,4 +152,62 @@ describe('Tweets', () => {
         })
     });
   });
+  describe('POST /retweet/tweet/:tweetId', () => {
+    it('should throw tweet not found error', (done) => {
+      chai.request(server)
+        .post('/retweet/tweet/' + tweetId)
+        .set('authorization', auth_token)
+        .end((err, res) => {
+          res.should.have.status(404);
+          done();
+        })
+    });
+    it('should retweet the tweet', (done) => {
+      chai.request(server)
+        .post('/retweet/tweet/' + likeTweetId)
+        .set('authorization', auth_token)
+        .end((err, res) => {
+          res.should.have.status(201);
+          done();
+        })
+    });
+    it('should already liking the tweet error', (done) => {
+      chai.request(server)
+        .post('/retweet/tweet/' + likeTweetId)
+        .set('authorization', auth_token)
+        .end((err, res) => {
+          res.should.have.status(400);
+          done();
+        })
+    });
+  });
+  describe('DELETE /unretweet/tweet/:tweetId', () => {
+    it('should throw tweet not found error', (done) => {
+      chai.request(server)
+        .delete('/unretweet/tweet/' + tweetId)
+        .set('authorization', auth_token)
+        .end((err, res) => {
+          res.should.have.status(404);
+          done();
+        })
+    });
+    it('should unretweet the tweet', (done) => {
+      chai.request(server)
+        .delete('/unretweet/tweet/' + likeTweetId)
+        .set('authorization', auth_token)
+        .end((err, res) => {
+          res.should.have.status(204);
+          done();
+        })
+    });
+    it('should already unretweeted the tweet error', (done) => {
+      chai.request(server)
+        .delete('/unretweet/tweet/' + likeTweetId)
+        .set('authorization', auth_token)
+        .end((err, res) => {
+          res.should.have.status(400);
+          done();
+        })
+    });
+  });
 })
