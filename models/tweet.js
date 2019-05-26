@@ -21,6 +21,24 @@ class Tweet extends Model {
           from: 'tweet.user_id',
           to: 'user.id'
         }
+      },
+
+      children: {
+        relation: Model.HasManyRelation,
+        modelClass: __dirname + '/tweet',
+        join: {
+          from: 'tweet.id',
+          to: 'tweet.parent_id'
+        }
+      },
+
+      parent: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: __dirname + '/tweet',
+        join: {
+          to: 'tweet.id',
+          from: 'tweet.parent_id'
+        }
       }
     }
   }
