@@ -4,6 +4,9 @@
   "description": "",
   "main": "app.js",
   "scripts": {
+    "start": "node app.js",
+    "migrate-start": "npm run migrate && npm start",
+    "migrate": "node -r ./dotenv-config.js ./node_modules/knex/bin/cli.js migrate:latest --env databaseConfig",
     "test": "mocha"
   },
   "author": "",
