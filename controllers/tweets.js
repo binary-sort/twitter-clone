@@ -4,6 +4,15 @@ const Retweet = require('./../models/retweet');
 
 const CreateTweet = async (req, res) => {
     let parentId = req.params.tweetId;
+    if (typeof parentId !== 'undefined') {
+        if (!+parentId) {
+            throw notFoundError('Tweet not Found!');
+        }
+        let tweet = await Tweets.query().findById(+parentId);
+        if (!tweet) {
+            throw notFoundError('Tweet not Found!');
+        }
+    }
     let payload = {
         user_id: req.user.id,
         tweet: req.body.tweet,
