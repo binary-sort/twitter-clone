@@ -1,4 +1,5 @@
 const Tweets = require('../models/tweet');
+const Likes = require('./../models/likes');
 
 const CreateTweet = async (req, res) => {
     let payload = {
@@ -41,9 +42,59 @@ const GetTweet = async (req, res) => {
     return okResponse(res, tweet);
 }
 
+const LikeTweet = async (req, res) => {
+    let tweetId = req.params.tweetId;
+    let userId = req.user.id;
+    if (!+tweetId) {
+        throw notFoundError('Tweet not found!');
+    }
+    let tweet = await Tweets.query().findById(+tweetId);
+    if (!tweet) {
+        throw notFoundError('Tweet not Found!');
+    }
+    let like = await Likes.query()
+        .where('tweet_id', tweetId)
+        .where('user_id', userId)
+        .first();
+    if (like) {
+        throw badRequestError('Already liking this tweet!');
+    }
+    like = await Likes.query().insert({
+        tweet_id: tweetId,
+        user_id: userId
+    })
+    return createdResponse(res, like, 'Tweet liked!');
+}
+
+const UnlikeTweet = async (req, res) => {
+    let tweetId = req.params.tweetId;
+    let userId = req.user.id;
+    if (!+tweetId) {
+        throw notFoundError('Tweet not found!');
+    }
+    let tweet = await Tweets.query().findById(+tweetId);
+    if (!tweet) {
+        throw notFoundError('Tweet not Found!');
+    }
+    let like = await Likes.query()
+        .where('tweet_id', tweetId)
+        .where('user_id', userId)
+        .first();
+    if (!like) {
+        throw badRequestError('Already not liking this tweet!');
+    }
+    await Likes.query()
+        .where('tweet_id', tweetId)
+        .where('user_id', userId)
+        .delete();
+    return noContentResponse(res, 'Tweet unliked!');
+}
+
 module.exports = {
     CreateTweet,
     DeleteTweet,
     TimelineTweets,
-    GetTweet
+    GetTweet,
+    LikeTweet,
+    UnlikeTweet
 }

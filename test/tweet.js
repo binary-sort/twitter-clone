@@ -82,5 +82,16 @@ describe('Tweets', () => {
           done();
         })
     });
+  });
+  describe('POST /like/tweet/:tweetId', () => {
+    it('should like the tweet', (done) => {
+      chai.request(server)
+        .post('/like/tweet/' + tweetId)
+        .set('authorization', auth_token)
+        .end((err, res) => {
+          res.should.have.status(201);
+          done();
+        })
+    })
   })
 })
