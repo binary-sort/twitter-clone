@@ -30,4 +30,12 @@ router.delete('/unlike/tweet/:tweetId', passport.authenticate('jwt', {
   session: false
 }), TweetsController.UnlikeTweet);
 
+router.post('/retweet/tweet/:tweetId', passport.authenticate('jwt', {
+  session: false
+}), TweetsController.RetweetTweet);
+
+router.delete('/unretweet/tweet/:tweetId', passport.authenticate('jwt', {
+  session: false
+}), TweetsController.UnRetweetTweet);
+
 module.exports = router;
