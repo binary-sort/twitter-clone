@@ -20,6 +20,7 @@ let auth_token = '';
 let tweetId;
 let likeTweetId;
 const tweet = 'This is a test tweet!';
+const reply = 'This is a reply!';
 
 describe('Tweets', () => {
   before((done) => {
@@ -210,4 +211,33 @@ describe('Tweets', () => {
         })
     });
   });
-})
+  describe('POST reply/:tweetId', () => {
+    it('should throw not found error', (done) => {
+      chai.request(server)
+        .post('/reply/' + tweetId)
+        .send({
+          tweet: reply
+        })
+        .set('authorization', auth_token)
+        .end((err, res) => {
+          res.should.have.status(404);
+          done();
+        })
+    });
+    it('should reply to a tweet', (done) => {
+      chai.request(server)
+        .post('/reply/' + likeTweetId)
+        .send({
+          tweet: reply
+        })
+        .set('authorization', auth_token)
+        .end((err, res) => {
+          res.should.have.status(201);
+          res.body.data.should.have.property('id');
+          res.body.data.should.have.property('tweet').eql(reply);
+          res.body.data.should.have.property('parent_id').eql(likeTweetId);
+          done();
+        })
+    });
+  });
+});
