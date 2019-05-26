@@ -1,6 +1,8 @@
 require('./init');
 
 const Token = require('./../models/token');
+const User = require('./../models/user');
+const Tweet = require('./../models/tweet');
 
 const chai = require('chai');
 const chaiHttp = require('chai-http');
@@ -16,13 +18,22 @@ const user = {
 
 let auth_token = '';
 let tweetId;
+let likeTweetId;
 const tweet = 'This is a test tweet!';
 
 describe('Tweets', () => {
   before((done) => {
     Token.query().select('token').joinRelation('user').where('user.username', 'testuser').first().then(result => {
       auth_token = 'Bearer ' + result.token;
-      done();
+      User.query().where('username', 'testuser2').first().then(user => {
+        Tweet.query().insert({
+          tweet: 'Test Tweet',
+          user_id: user.id
+        }).then(tweet => {
+          likeTweetId = tweet.id;
+          done();
+        })
+      })
     })
   });
   describe('Unauthorized Check', () => {
@@ -73,7 +84,7 @@ describe('Tweets', () => {
           done();
         })
     });
-    it('GET /tweet/:tweetId: should delete the tweet!', (done) => {
+    it('DELETE /tweet/:tweetId: should delete the tweet!', (done) => {
       chai.request(server)
         .delete('/tweet/' + tweetId)
         .set('authorization', auth_token)
@@ -84,14 +95,61 @@ describe('Tweets', () => {
     });
   });
   describe('POST /like/tweet/:tweetId', () => {
-    it('should like the tweet', (done) => {
+    it('should throw tweet not found error', (done) => {
       chai.request(server)
         .post('/like/tweet/' + tweetId)
+        .set('authorization', auth_token)
+        .end((err, res) => {
+          res.should.have.status(404);
+          done();
+        })
+    });
+    it('should like the tweet', (done) => {
+      chai.request(server)
+        .post('/like/tweet/' + likeTweetId)
         .set('authorization', auth_token)
         .end((err, res) => {
           res.should.have.status(201);
           done();
         })
-    })
-  })
+    });
+    it('should already liking the tweet error', (done) => {
+      chai.request(server)
+        .post('/like/tweet/' + likeTweetId)
+        .set('authorization', auth_token)
+        .end((err, res) => {
+          res.should.have.status(400);
+          done();
+        })
+    });
+  });
+  describe('DELETE /unlike/tweet/:tweetId', () => {
+    it('should throw tweet not found error', (done) => {
+      chai.request(server)
+        .delete('/unlike/tweet/' + tweetId)
+        .set('authorization', auth_token)
+        .end((err, res) => {
+          res.should.have.status(404);
+          done();
+        })
+    });
+    it('should unlike the tweet', (done) => {
+      chai.request(server)
+        .delete('/unlike/tweet/' + likeTweetId)
+        .set('authorization', auth_token)
+        .end((err, res) => {
+          res.should.have.status(204);
+          done();
+        })
+    });
+    it('should already unliking the tweet error', (done) => {
+      chai.request(server)
+        .delete('/unlike/tweet/' + likeTweetId)
+        .set('authorization', auth_token)
+        .end((err, res) => {
+          res.should.have.status(400);
+          done();
+        })
+    });
+  });
 })

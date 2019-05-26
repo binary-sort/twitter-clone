@@ -26,7 +26,7 @@ const app = express()
   .use(express.urlencoded({
     extended: true
   }))
-  .use(morgan('dev'))
+  // .use(morgan('dev'))
   .set('json spaces', 2);
 
 // app.use((req, res, next) => {
@@ -45,7 +45,7 @@ app.use(routes);
 //       recipe for a better handler: http://vincit.github.io/objection.js/#error-handling
 app.use((err, req, res, next) => {
   if (err) {
-    console.error(err);
+    // console.error(err);
     res.status(err.statusCode || err.status || 500).send(err || {});
   } else {
     next();
